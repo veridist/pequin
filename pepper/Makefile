@@ -95,7 +95,11 @@ pepper_verifier_%: pepper_verifier.cpp objs common_defs.h $(BINDIR)/%.params
 pepper_prover_%: pepper_prover.cpp objs common_defs.h $(BINDIR)/%.params
 	$(eval TARG := $(@:pepper_prover_%=%))
 	$(CXX) $(CXXFLAGS) -DNAME=\"$(TARG)\" $(IFLAGS)  $<  -o $(BINDIR)/$@ $(COMMON_LIB_OBJFILES) $(LDFLAGS)
-	
+
+pepper_partial_prover_%: pepper_partial_prover.cpp objs common_defs.h $(BINDIR)/%.params
+	$(eval TARG := $(@:pepper_partial_prover_%=%))
+	$(CXX) $(CXXFLAGS) -DNAME=\"$(TARG)\" $(IFLAGS)  $<  -o $(BINDIR)/$@ $(COMMON_LIB_OBJFILES) $(LDFLAGS)
+
 objs: $(COMMON_LIB_OBJFILES)
 		@echo + compiling common objs
 
@@ -164,7 +168,7 @@ clean-all: clean
 clean:
 	rm -rf $(GENSRCDIR)
 	rm -rf $(BINDIR)
-	rm -rf *.o pepper_prover pepper_verifier
+	rm -rf *.o pepper_prover pepper_verifier pepper_partial_prover
 	rm -rf $(VERDIR)
 	rm -rf $(PDIR)
 	rm -rf $(SHAREDIR)

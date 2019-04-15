@@ -75,6 +75,77 @@ size_input(_size_input), size_output(_size_output), num_vars(_num_vars), num_con
 
 }
 
+ComputationProver::
+ComputationProver(int _num_vars, int _num_cons, int _size_input, int _size_output, 
+                  mpz_t _prime, const char *_shared_bstore_file_name, string inputFilename, bool only_setup, std::vector<int> F1_init):
+size_input(_size_input), size_output(_size_output), num_vars(_num_vars), num_cons(_num_cons), 
+    shared_bstore_file_name(string(_shared_bstore_file_name))
+{
+    init_block_store();
+    if (only_setup) {
+        return;
+    }
+
+    size_f1_vec = num_vars;
+    mpz_init_set(prime, _prime);
+    alloc_init_vec(&F1, size_f1_vec);
+    alloc_init_vec(&F1_q, size_f1_vec);
+
+    for (int i = 0; i < size_f1_vec; ++i) {
+      mpz_set_ui(F1[i], F1_init[i]);
+      mpq_set_ui(F1_q[i], F1_init[i], 1);
+    }
+
+    F1_index = new uint32_t[size_f1_vec];
+    for (int i = 0; i < size_f1_vec; i++)
+        F1_index[i] = i;
+
+    alloc_init_vec(&input_output_q, size_input+size_output);
+
+    input_q = &input_output_q[0];
+    output_q = &input_output_q[size_input];
+
+    alloc_init_vec(&input_output, size_input+size_output);
+    input = &input_output[0];
+    output = &input_output[size_input];
+    temp_stack_size = 16;
+    alloc_init_vec(&temp_qs, temp_stack_size);
+
+    alloc_init_scalar(temp);
+    alloc_init_scalar(temp2);
+    alloc_init_scalar(temp_q);
+    alloc_init_scalar(temp_q2);
+
+    ifstream inputFile(inputFilename);
+    if (!inputFile.is_open()) {
+        cerr << "ERROR: " << inputFilename << " not found. Did you run the verifier first?" << endl;
+        cerr << "Aborting." << endl;
+        exit(1);
+    }
+
+    for (int i = 0; i < size_input; i++) {
+        inputFile >> input_q[i];
+    }
+
+}
+
+
+void ComputationProver::print_io() {
+  using namespace std;
+
+  cout << "IO: ";
+  for (int i = 0; i < size_input + size_output; ++i) {
+    cout << input_output_q[i] << " "; 
+  }
+  cout << endl;
+
+  cout << "V: ";
+  for (int i = 0; i < size_f1_vec; ++i) {
+    cout << F1_q[i] << " ";
+  }
+  cout << endl;
+
+}
 
 ComputationProver::~ComputationProver() {
     if (_ram != NULL)
@@ -1126,8 +1197,7 @@ void ComputationProver::compute_genericget(FILE* pws_file) {
  *
  * The method name stands for "variable or constant"
  **/
-//mpq_t& ComputationProver::voc(const std::string& str, mpq_t& use_if_constant) {
-mpq_t& ComputationProver::voc(const char* str, mpq_t& use_if_constant) {
+mpq_t& ComputationProver::voc(const std::string& str, mpq_t& use_if_constant) {
   int index;
   const char* name = str;
   if (name[0] == 'V') {
@@ -1319,6 +1389,7 @@ void ComputationProver::compute_from_pws(const char* pws_filename) {
   char tok[BUFLEN], cmds[BUFLEN];
   while(try_next_token(pws_file, tok) != EOF) {
     if (strcmp(tok, "P") == 0) {
+      //print_io();
       next_token_or_error(pws_file, cmds);
       mpq_t& Y = voc(cmds, temp_q);
       expect_next_token(pws_file, "=", "Invalid POLY");

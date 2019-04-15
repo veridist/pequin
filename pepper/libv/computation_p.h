@@ -78,11 +78,17 @@ protected:
     ComputationProver(int _num_vars, int _num_cons, int _size_input, int _size_output,
                       mpz_t _prime, const char *_shared_bstore_file_name, string input_file, bool only_setup);
 
+    ComputationProver(int _num_vars, int _num_cons, int _size_input, int _size_output,
+                      mpz_t _prime, const char *_shared_bstore_file_name, string input_file, bool only_setup,
+                      std::vector<int> F1_init);
+
     ~ComputationProver();
     void compute_from_pws(const char* pws_filename);
 
     mpz_t *input, *output, *F1;
     mpq_t *input_output_q;
+
+    void print_io();
 };
 
 #endif  // CODE_PEPPER_LIBV_COMPUTATION_P_H_

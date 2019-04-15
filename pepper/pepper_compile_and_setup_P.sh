@@ -28,5 +28,5 @@ then
     exit 1
 fi
 make pepper_prover_$1
+#make pepper_partial_prover_$1
 bin/pepper_prover_$1 setup
-
