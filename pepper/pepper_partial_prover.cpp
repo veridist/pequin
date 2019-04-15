@@ -19,7 +19,6 @@
 #endif
 
 int main (int argc, char* argv[]) {
-
     if (argc != 5) {
         std::cerr << "Fix your args!\n";
         std::cerr << "Need \"prover name.params name.pws name.inputs name.partial\"\n";
@@ -30,6 +29,7 @@ int main (int argc, char* argv[]) {
 
     mpz_t prime;
     mpz_init_set_str(prime, "21888242871839275222246405745257275088548364400416034343698204186575808495617", 10);
+    std::cout << "Prime initialized..\n";
 
     std::string input_fn = string(argv[3]);
 
@@ -49,7 +49,9 @@ int main (int argc, char* argv[]) {
         exit(1);
     }
 
+    std::cout << "Initializing prover object..\n";
     ComputationProver prover(p.n_vars, p.n_constraints, p.n_inputs, p.n_outputs, prime, "default_shared_db", input_fn, false, F1_init);
+    std::cout << "Prover object initialized..\n";
 
     prover.compute_from_pws(argv[2]);
     prover.print_io();

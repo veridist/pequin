@@ -33,7 +33,7 @@ size_input(_size_input), size_output(_size_output), num_vars(_num_vars), num_con
     shared_bstore_file_name(string(_shared_bstore_file_name))
 {
 
-    init_block_store();
+    // init_block_store();
     if (only_setup) {
         return;
     }
@@ -42,7 +42,7 @@ size_input(_size_input), size_output(_size_output), num_vars(_num_vars), num_con
     mpz_init_set(prime, _prime);
     alloc_init_vec(&F1, size_f1_vec);
     alloc_init_vec(&F1_q, size_f1_vec);
-        
+
     F1_index = new uint32_t[size_f1_vec];
     for (int i = 0; i < size_f1_vec; i++)
         F1_index[i] = i;
@@ -81,7 +81,7 @@ ComputationProver(int _num_vars, int _num_cons, int _size_input, int _size_outpu
 size_input(_size_input), size_output(_size_output), num_vars(_num_vars), num_cons(_num_cons), 
     shared_bstore_file_name(string(_shared_bstore_file_name))
 {
-    init_block_store();
+    // init_block_store();
     if (only_setup) {
         return;
     }
@@ -148,10 +148,10 @@ void ComputationProver::print_io() {
 }
 
 ComputationProver::~ComputationProver() {
-    if (_ram != NULL)
-     delete _ram;
-   if (_blockStore != NULL)
-     delete _blockStore;
+    // if (_ram != NULL)
+    //  delete _ram;
+  //  if (_blockStore != NULL)
+  //    delete _blockStore;
 }
 
 static void zcomp_assert(const char* a, const char* b,
@@ -279,7 +279,7 @@ void ComputationProver::init_block_store() {
   snprintf(bstore_file_path_priv, BUFLEN - 1, "%s/prover_%s", bstore_file_path, shared_bstore_file_name.c_str());
   string bstore_file_path_priv_str(bstore_file_path_priv);
   _blockStore = new ConfigurableBlockStore(bstore_file_path_priv_str);
-  _ram = new RAMImpl(_blockStore);
+  // _ram = new RAMImpl(_blockStore);
   // exogenous check unimplemented for now.
   //  exogenous_checker->set_block_store(_blockStore, _ram);
 }
@@ -1197,7 +1197,7 @@ void ComputationProver::compute_genericget(FILE* pws_file) {
  *
  * The method name stands for "variable or constant"
  **/
-mpq_t& ComputationProver::voc(const std::string& str, mpq_t& use_if_constant) {
+mpq_t& ComputationProver::voc(const char* str, mpq_t& use_if_constant) {
   int index;
   const char* name = str;
   if (name[0] == 'V') {
@@ -1457,18 +1457,18 @@ void ComputationProver::compute_from_pws(const char* pws_filename) {
       compute_split_int_le(pws_file);
     } else if (strcmp(tok, "MATRIX_VEC_MUL") == 0) {
       compute_matrix_vec_mul(pws_file);
-    } else if (strcmp(tok, "DB_GET_BITS") == 0) {
-      compute_db_get_bits(pws_file);
-    } else if (strcmp(tok, "DB_PUT_BITS") == 0) {
-      compute_db_put_bits(pws_file);
-    } else if (strcmp(tok, "DB_GET_SIBLING_HASH") == 0) {
-      compute_db_get_sibling_hash(pws_file);
-    } else if (strcmp(tok, "GET_BLOCK_BY_HASH") == 0) {
-      compute_get_block_by_hash(pws_file);
-    } else if (strcmp(tok, "PUT_BLOCK_BY_HASH") == 0) {
-      compute_put_block_by_hash(pws_file);
-    } else if (strcmp(tok, "FREE_BLOCK_BY_HASH") == 0) {
-      compute_free_block_by_hash(pws_file);
+    // } else if (strcmp(tok, "DB_GET_BITS") == 0) {
+    //   compute_db_get_bits(pws_file);
+    // } else if (strcmp(tok, "DB_PUT_BITS") == 0) {
+    //   compute_db_put_bits(pws_file);
+    // } else if (strcmp(tok, "DB_GET_SIBLING_HASH") == 0) {
+    //   compute_db_get_sibling_hash(pws_file);
+    // } else if (strcmp(tok, "GET_BLOCK_BY_HASH") == 0) {
+    //   compute_get_block_by_hash(pws_file);
+    // } else if (strcmp(tok, "PUT_BLOCK_BY_HASH") == 0) {
+    //   compute_put_block_by_hash(pws_file);
+    // } else if (strcmp(tok, "FREE_BLOCK_BY_HASH") == 0) {
+    //   compute_free_block_by_hash(pws_file);
     } else if (strcmp(tok, "GENERICGET") == 0) {
       compute_genericget(pws_file);
     } else if (strcmp(tok, "PRINTF") == 0) {
@@ -1482,10 +1482,10 @@ void ComputationProver::compute_from_pws(const char* pws_filename) {
       if (mpz_sgn(Z) != 0){
         cout << "ASSERT_ZERO FAILED: " << var << " is " << mpz_get_str(NULL, 10, Z) << endl;
       }
-    } else if (strcmp(tok, "RAMGET_FAST") == 0) {
-      compute_fast_ramget(pws_file);
-    } else if (strcmp(tok, "RAMPUT_FAST") == 0) {
-      compute_fast_ramput(pws_file);
+    // } else if (strcmp(tok, "RAMGET_FAST") == 0) {
+    //   compute_fast_ramget(pws_file);
+    // } else if (strcmp(tok, "RAMPUT_FAST") == 0) {
+    //   compute_fast_ramput(pws_file);
     } else if (strcmp(tok, "BENES_NETWORK") == 0) {
       //compute_benes_network(pws_file);
     } else if (strcmp(tok, "WAKSMAN_NETWORK") == 0) {

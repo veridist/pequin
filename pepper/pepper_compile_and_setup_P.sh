@@ -27,6 +27,6 @@ then
     echo $0 "mm_pure_arith"
     exit 1
 fi
-make pepper_prover_$1
-#make pepper_partial_prover_$1
-bin/pepper_prover_$1 setup
+#make pepper_prover_$1
+make pepper_partial_prover_$1
+#bin/pepper_prover_$1 setup
